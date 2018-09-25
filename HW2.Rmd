@@ -1,0 +1,12 @@
+---
+title: "Homework 2"
+author: "Christopher Crowe"
+date: "September 25, 2018"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
