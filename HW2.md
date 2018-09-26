@@ -90,6 +90,32 @@ The piping in the following code chunk:
 -   rounds the number of sports balls to the nearest integer and converts it to an interger variable
 
 ``` r
-trash_wheel = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-9-26.xlsx", range = "Mr. Trash Wheel!A2:N258") %>% 
-  janitor::clean_names()
+trash_wheel = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-3.xlsx", "Mr. Trash Wheel", range = cellranger::cell_cols("A:N")) %>% 
+  janitor::clean_names() %>% 
+  filter(!is.na(dumpster)) %>% 
+  mutate(sports_balls = as.integer(round(sports_balls)))
 ```
+
+The piping in the following code chunk:
+
+-   reads in the 2016 Precipitation and 2017 Precipitation sheets
+-   cleans the variable names
+-   omits rows without precipitation data
+-   adds a variable `year`
+
+``` r
+precipitation_16 = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-3.xlsx", "2016 Precipitation", range = cellranger::cell_cols("A:B")) %>% 
+  janitor::clean_names() %>% 
+  filter(!is.na(precipitation_in) & !is.na(x_1) & precipitation_in != "Month") %>% 
+  mutate(year = "2016")
+
+precipitation_17 = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-3.xlsx", "2017 Precipitation", range = cellranger::cell_cols("A:B")) %>% 
+  janitor::clean_names() %>% 
+  filter(!is.na(precipitation_in) & !is.na(x_1) & precipitation_in != "Month") %>% 
+  mutate(year = "2017")
+
+precipitation_16_17 = bind_rows(precipitation_16, precipitation_17) %>% 
+  mutate(precipitation_in = month.name[as.integer(precipitation_in)])
+```
+
+In the dataset for 2016, there are 12 observations. In the dataset for 2017, there are 3 observations.
