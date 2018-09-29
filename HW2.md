@@ -90,7 +90,7 @@ The piping in the following code chunk:
 -   rounds the number of sports balls to the nearest integer and converts it to an interger variable
 
 ``` r
-trash_wheel = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-3.xlsx", "Mr. Trash Wheel", range = cellranger::cell_cols("A:N")) %>% 
+trash_wheel = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-9-26.xlsx", "Mr. Trash Wheel", range = cellranger::cell_cols("A:N")) %>% 
   janitor::clean_names() %>% 
   filter(!is.na(dumpster)) %>% 
   mutate(sports_balls = as.integer(round(sports_balls)))
@@ -104,18 +104,22 @@ The piping in the following code chunk:
 -   adds a variable `year`
 
 ``` r
-precipitation_16 = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-3.xlsx", "2016 Precipitation", range = cellranger::cell_cols("A:B")) %>% 
+precipitation_16 = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-9-26.xlsx", "2016 Precipitation", range = cellranger::cell_cols("A:B")) %>% 
   janitor::clean_names() %>% 
   filter(!is.na(precipitation_in) & !is.na(x_1) & precipitation_in != "Month") %>% 
-  mutate(year = "2016")
+  rename(month_var = precipitation_in, total_precip_inches = x_1) %>% 
+  mutate(year = "2016", total_precip_inches = round(as.double(total_precip_inches), digits = 2))
 
-precipitation_17 = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-3.xlsx", "2017 Precipitation", range = cellranger::cell_cols("A:B")) %>% 
+precipitation_17 = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-9-26.xlsx", "2017 Precipitation", range = cellranger::cell_cols("A:B")) %>% 
   janitor::clean_names() %>% 
   filter(!is.na(precipitation_in) & !is.na(x_1) & precipitation_in != "Month") %>% 
-  mutate(year = "2017")
+  rename(month_var = precipitation_in, total_precip_inches = x_1) %>% 
+  mutate(year = "2017", total_precip_inches = round(as.double(total_precip_inches), digits = 2))
 
-precipitation_16_17 = bind_rows(precipitation_16, precipitation_17) %>% 
-  mutate(precipitation_in = month.name[as.integer(precipitation_in)])
+
+precipitation_16_17 = bind_rows(precipitation_16, precipitation_17) %>%
+  select(year, month_var, total_precip_inches) %>% 
+  mutate(month_var = month.name[as.integer(month_var)])
 ```
 
-In the dataset for 2016, there are 12 observations. In the dataset for 2017, there are 3 observations.
+In the dataset for 2016, there are 12 observations. In the dataset for 2017, there are 8 observations. The key variables in the dataset are `year`, `month_var`, and `total_precip_inches`. `year` represents the year in which the data was recorded, such as 2017. `month_var` represents the month in which the data was recorded, such as January. `total_precip_inches` represents the amount of precipitation (inches) for a given recording period, such as 2.34. Using this data set, we can see that the total precipitation for 2017 so far is 29.93 inches. The median number of sports balls 26
