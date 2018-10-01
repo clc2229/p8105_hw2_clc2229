@@ -122,4 +122,50 @@ precipitation_16_17 = bind_rows(precipitation_16, precipitation_17) %>%
   mutate(month_var = month.name[as.integer(month_var)])
 ```
 
-In the dataset for 2016, there are 12 observations. In the dataset for 2017, there are 8 observations. The key variables in the dataset are `year`, `month_var`, and `total_precip_inches`. `year` represents the year in which the data was recorded, such as 2017. `month_var` represents the month in which the data was recorded, such as January. `total_precip_inches` represents the amount of precipitation (inches) for a given recording period, such as 2.34. Using this data set, we can see that the total precipitation for 2017 so far is 29.93 inches. The median number of sports balls 26
+In the dataset for 2016, there are 12 observations. In the dataset for 2017, there are 8 observations. The key variables in the dataset are `year`, `month_var`, and `total_precip_inches`. `year` represents the year in which the data was recorded, such as 2017. `month_var` represents the month in which the data was recorded, such as January. `total_precip_inches` represents the amount of precipitation (inches) for a given recording period, such as 2.34. Using this data set, we can see that the total precipitation for 2017 so far is 29.93 inches. The median number of sports balls collected in 2016 was 26
+
+Problem 3
+---------
+
+The piping in the following code chunk manipulates the BRFSS SMART2010 dataset so that:
+
+-   the variable names are clean
+-   we are only focusing on the "Overall Health" topic
+-   we have excluded variables for class, topic, question, sample size, and everything from lower confidence limit to GeoLocation
+-   the responses (excellent to poor) are variables with the value of `data_value`
+-   there is a new variable that shows the proportion of responses that were "Excellent" or "Very Good"
+
+``` r
+devtools::install_github("p8105/p8105.datasets")
+```
+
+    ## Skipping install of 'p8105.datasets' from a github remote, the SHA1 (21f5ad1c) has not changed since last install.
+    ##   Use `force = TRUE` to force installation
+
+``` r
+library(p8105.datasets)
+data("brfss_smart2010")
+
+
+brfss_data = brfss_smart2010 %>%
+  janitor::clean_names() %>% 
+  filter(topic == "Overall Health") %>% 
+  select(-class, -topic, -question, -sample_size, -confidence_limit_low:-geo_location) %>% 
+  spread(key = response, value = data_value) %>% 
+  janitor::clean_names() %>% 
+  mutate(proportion_excellent_vgood = (excellent + very_good) / 100)
+```
+
+There are 404 distinct locations included in this dataset.There are 51 distinct states represented, so we can assume all 50 states and Washington, DC are represented in this dataset. With 146 observations, NJ is the most observed state. The median of the "Excellent" response value in 2002 was 23.6.
+
+Here is a histogram of the "Excellent" response value in 2002.
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 6 rows containing non-finite values (stat_bin).
+
+![](HW2_files/figure-markdown_github/histogram-1.png)
+
+Here is a scatterplot showing the proportion of “Excellent” response values in New York County and Queens County (both in NY State) in each year from 2002 to 2010.
+
+![](HW2_files/figure-markdown_github/scatter-1.png)
