@@ -87,7 +87,7 @@ The piping in the following code chunk:
 -   omits columns with notes
 -   cleans the variable names
 -   omits rows without dumpster-specific data
--   rounds the number of sports balls to the nearest integer and converts it to an interger variable
+-   rounds the number of sports balls to the nearest integer and converts it to an integer variable
 
 ``` r
 trash_wheel = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-9-26.xlsx", "Mr. Trash Wheel", range = cellranger::cell_cols("A:N")) %>% 
@@ -102,6 +102,8 @@ The piping in the following code chunk:
 -   cleans the variable names
 -   omits rows without precipitation data
 -   adds a variable `year`
+-   combines the data from 2016 and 2017
+-   converts numeric months to character months
 
 ``` r
 precipitation_16 = readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-9-26.xlsx", "2016 Precipitation", range = cellranger::cell_cols("A:B")) %>% 
@@ -161,8 +163,6 @@ There are 404 distinct locations included in this dataset.There are 51 distinct 
 Here is a histogram of the "Excellent" response value in 2002.
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
-    ## Warning: Removed 6 rows containing non-finite values (stat_bin).
 
 ![](HW2_files/figure-markdown_github/histogram-1.png)
 
